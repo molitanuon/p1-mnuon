@@ -4,7 +4,8 @@
      Molita Nuon: molitanuon36@csu.fullerton.edu
      Yocelin 
 
-## Programming Language: C++
+## Programming Language: 
+     C++
 
 ## How to execute: 
      make 
