@@ -34,22 +34,24 @@ void init(int& shmid, int& msqid, void*& sharedMemPtr)
 		    is unique system-wide among all SYstem V objects. Two objects, on the other hand,
 		    may have the same key.
 	 */
-
 	 key_t key = ftok("keyfile.txt", 'a');
-
 	 if(key < 0)
 	 {
 		 perror("ftok");
 		 exit(1);
 	 }
+	 printf("Key generated...\n");
+
 	/* TODO: Get the id of the shared memory segment. The size of the segment must be SHARED_MEMORY_CHUNK_SIZE */
-	shmid = shmget(key, SHARED_MEMORY_CHUNK_SIZE, 0644);
+	shmid = shmget(key, SHARED_MEMORY_CHUNK_SIZE, 0644 | IPC_CREAT);
 	if (shmid < 0)
 	{
 		perror("shmget");
 		exit(1);
-
 	}
+
+	printf("ID of shared memory segment recieved.\n");
+
 	/* TODO: Attach to the shared memory */
 	sharedMemPtr = shmat(shmid, NULL, 0);
 	if(sharedMemPtr < 0)
@@ -57,13 +59,16 @@ void init(int& shmid, int& msqid, void*& sharedMemPtr)
 		perror("shmat");
 		exit(1);
 	}
+	printf("Attched to the shared memory.\n");
+
 	/* TODO: Attach to the message queue */
-	msqid = msgget(key, 0666);
+	msqid = msgget(key, 0644 | IPC_CREAT);
 	if(msqid < 0)
 	{
 		perror("msgget");
 		exit(1);
 	}
+	printf("Attached to the message queue.\n");
 	/* Store the IDs and the pointer to the shared memory region in the corresponding parameters */
 
 }
@@ -79,7 +84,7 @@ void cleanUp(const int& shmid, const int& msqid, void* sharedMemPtr)
 {
 	/* TODO: Detach from shared memory */
 	shmdt(sharedMemPtr);
-
+  printf("Detached from shared memory.\n");
 }
 
 /**
@@ -106,6 +111,7 @@ void send(const char* fileName)
 	}
 
 	/* Read the whole file */
+	printf("Reading the file.\n");
 	while(!feof(fp))
 	{
 		/* Read at most SHARED_MEMORY_CHUNK_SIZE from the file and store them in shared memory.
@@ -122,12 +128,14 @@ void send(const char* fileName)
 		/* TODO: Send a message to the receiver telling him that the data is ready
  		 * (message of type SENDER_DATA_TYPE)
  		 */
+		 	printf("Sending message to the receiver.\n");
 		 sndMsg.mtype = SENDER_DATA_TYPE;
 		 msgsnd(msqid, &sndMsg, sizeof(sndMsg) - sizeof(long), 0);
 
 		/* TODO: Wait until the receiver sends us a message of type RECV_DONE_TYPE telling us
  		 * that he finished saving the memory chunk.
  		 */
+		 	printf("Waiting for the receiver.\n");
 			msgrcv(msqid, &rcvMsg, 0, RECV_DONE_TYPE, 0);
 	}
 
@@ -136,11 +144,14 @@ void send(const char* fileName)
  	  * Lets tell the receiver that we have nothing more to send. We will do this by
  	  * sending a message of type SENDER_DATA_TYPE with size field set to 0.
 	  */
+			printf("Nothing left to send.\n");
 			sndMsg.size = 0;
+			sndMsg.mtype = SENDER_DATA_TYPE;
 			msgsnd(msqid, &sndMsg, sizeof(sndMsg) - sizeof(long), 0);
 
 	/* Close the file */
 	fclose(fp);
+	printf("Sender job done.\n");
 
 }
 
