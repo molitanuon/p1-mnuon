@@ -55,11 +55,11 @@ void init(int& shmid, int& msqid, void*& sharedMemPtr)
 	if(sharedMemPtr < 0)
 	{
 		perror("shmat");
-		exit(1)
+		exit(1);
 	}
 	/* TODO: Attach to the message queue */
-	mqid = msgget(key, 0666);
-	if(msqiud < 0)
+	msqid = msgget(key, 0666);
+	if(msqid < 0)
 	{
 		perror("msgget");
 		exit(1);
@@ -122,13 +122,13 @@ void send(const char* fileName)
 		/* TODO: Send a message to the receiver telling him that the data is ready
  		 * (message of type SENDER_DATA_TYPE)
  		 */
-		 sndMessage.mtype = SENDER_DATA_TYPE;
-		 msgsnd(msqid, &sndMsg, sizeof(sndMessage) - sizeof(long), 0);
+		 sndMsg.mtype = SENDER_DATA_TYPE;
+		 msgsnd(msqid, &sndMsg, sizeof(sndMsg) - sizeof(long), 0);
 
 		/* TODO: Wait until the receiver sends us a message of type RECV_DONE_TYPE telling us
  		 * that he finished saving the memory chunk.
  		 */
-			msgrcv(msqid, &rvcMsg, 0, RECV_DONE_TYPE, 0);
+			msgrcv(msqid, &rcvMsg, 0, RECV_DONE_TYPE, 0);
 	}
 
 
@@ -136,8 +136,8 @@ void send(const char* fileName)
  	  * Lets tell the receiver that we have nothing more to send. We will do this by
  	  * sending a message of type SENDER_DATA_TYPE with size field set to 0.
 	  */
-			sndMessage.size = 0;
-			msgsnd(msqid, &sndMsg, sizeof(sndMessage) - sizeof(long), 0);
+			sndMsg.size = 0;
+			msgsnd(msqid, &sndMsg, sizeof(sndMsg) - sizeof(long), 0);
 
 	/* Close the file */
 	fclose(fp);
