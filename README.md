@@ -2,7 +2,7 @@
 
 # Group Members: 
      Molita Nuon: molitanuon36@csu.fullerton.edu
-     Yocelin 
+     Yocelin Esqueda-Briones: esqueda_yocelin@csu.fullerton.edu
 
 ## Programming Language: 
      C++
