@@ -1,4 +1,4 @@
-all: receiver sender
+all: recv sender
 
 sender: sender.cpp
 	g++ sender.cpp -o sender
