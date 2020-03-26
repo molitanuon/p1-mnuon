@@ -10,6 +10,9 @@
 ## How to execute: 
      make 
      ./sender
+     
+     //create a new tap 
+     
      ./recv
      
 ## Extra Credit: No
