@@ -7,7 +7,7 @@ sender.o: sender.cpp
 	g++ -c sender.cpp
 
 recv: recv.cpp
-	g++ recv.cpp -o receiver
+	g++ recv.cpp -o recv
 
 recv.o: recv.cpp
 	g++ -c recv.cpp
