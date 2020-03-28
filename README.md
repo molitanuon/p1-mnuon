@@ -20,3 +20,6 @@
 ## Member Parts
      Molita: Make readme file, work on the makefile and sender.cpp
      Yocelin: Work on the program design, rec.cpp
+
+## Test 
+![test case of sender] (
